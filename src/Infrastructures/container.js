@@ -2,19 +2,16 @@
 
 import { createContainer } from 'instances-container';
 
-// external agency
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
 import pool from './database/postgres/pool.js';
 import jwt from 'jsonwebtoken';
 
-// service (repository, helper, manager, etc)
 import UserRepository from '../Domains/users/UserRepository.js';
 import PasswordHash from '../Applications/security/PasswordHash.js';
 import UserRepositoryPostgres from './repository/UserRepositoryPostgres.js';
 import BcryptPasswordHash from './security/BcryptPasswordHash.js';
 
-// use case
 import AddUserUseCase from '../Applications/use_case/AddUserUseCase.js';
 import AuthenticationTokenManager from '../Applications/security/AuthenticationTokenManager.js';
 import JwtTokenManager from './security/JwtTokenManager.js';
@@ -38,10 +35,8 @@ import AddReplyUseCase from '../Applications/use_case/AddReplyUseCase.js';
 import DeleteReplyUseCase from '../Applications/use_case/DeleteReplyUseCase.js';
 import GetThreadDetailUseCase from '../Applications/use_case/GetThreadDetailUseCase.js';
 
-// creating container
 const container = createContainer();
 
-// registering services and repository
 container.register([
   {
     key: UserRepository.name,
@@ -122,7 +117,6 @@ container.register([
   },
 ]);
 
-// registering use cases
 container.register([
   {
     key: AddUserUseCase.name,

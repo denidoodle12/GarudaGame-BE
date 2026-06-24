@@ -177,7 +177,7 @@ describe('ReplyRepositoryPostgres', () => {
       expect(replies[0].content).toEqual('sebuah balasan');
       expect(replies[0].is_delete).toEqual(false);
       expect(new Date(replies[0].date).toISOString()).toEqual(new Date('2021-08-08T07:22:33.555Z').toISOString());
-      
+
       expect(replies[1].id).toEqual('reply-456');
       expect(replies[1].comment_id).toEqual('comment-123');
       expect(replies[1].username).toEqual('dicoding');

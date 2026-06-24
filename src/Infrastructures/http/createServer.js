@@ -8,15 +8,12 @@ import threads from '../../Interfaces/http/api/threads/index.js';
 const createServer = async (container) => {
   const app = express();
 
-  // Middleware for parsing JSON
   app.use(express.json());
 
-  // Register routes
   app.use('/users', users(container));
   app.use('/authentications', authentications(container));
   app.use('/threads', threads(container));
 
-  // Global error handler
   app.use((error, req, res, next) => {
     // bila response tersebut error, tangani sesuai kebutuhan
     const translatedError = DomainErrorTranslator.translate(error);
@@ -36,7 +33,6 @@ const createServer = async (container) => {
     });
   });
 
-  // 404 handler
   app.use((req, res) => {
     res.status(404).json({
       status: 'fail',

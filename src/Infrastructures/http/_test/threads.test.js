@@ -137,7 +137,7 @@ describe('/threads endpoint', () => {
       // Arrange
       const app = await createServer(container);
       const accessToken = await getAccessToken(app);
-      
+
       const authenticationTokenManager = container.getInstance(AuthenticationTokenManager.name);
       const { id: userId } = await authenticationTokenManager.decodePayload(accessToken);
 
@@ -186,7 +186,7 @@ describe('/threads endpoint', () => {
       // Arrange
       const app = await createServer(container);
       const accessToken = await getAccessToken(app);
-      
+
       const authenticationTokenManager = container.getInstance(AuthenticationTokenManager.name);
       const { id: userId } = await authenticationTokenManager.decodePayload(accessToken);
 
@@ -207,7 +207,7 @@ describe('/threads endpoint', () => {
       // Arrange
       const app = await createServer(container);
       const accessToken = await getAccessToken(app); // creates user 'dicoding'
-      
+
       await UsersTableTestHelper.addUser({ id: 'user-456', username: 'johndoe' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-456' });
       await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-456' });
@@ -228,7 +228,7 @@ describe('/threads endpoint', () => {
       // Arrange
       const app = await createServer(container);
       const accessToken = await getAccessToken(app);
-      
+
       const authenticationTokenManager = container.getInstance(AuthenticationTokenManager.name);
       const { id: userId } = await authenticationTokenManager.decodePayload(accessToken);
 
@@ -258,7 +258,7 @@ describe('/threads endpoint', () => {
       // Arrange
       const app = await createServer(container);
       const accessToken = await getAccessToken(app);
-      
+
       const authenticationTokenManager = container.getInstance(AuthenticationTokenManager.name);
       const { id: userId } = await authenticationTokenManager.decodePayload(accessToken);
 

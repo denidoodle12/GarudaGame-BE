@@ -167,7 +167,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments[0].content).toEqual('sebuah komentar');
       expect(comments[0].is_delete).toEqual(false);
       expect(new Date(comments[0].date).toISOString()).toEqual(new Date('2021-08-08T07:22:33.555Z').toISOString());
-      
+
       expect(comments[1].id).toEqual('comment-456');
       expect(comments[1].username).toEqual('dicoding');
       expect(comments[1].content).toEqual('komentar lain');
