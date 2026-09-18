@@ -5,3 +5,4 @@ config/database/test.json
 coverage
 .md
 .env
+.test.env
