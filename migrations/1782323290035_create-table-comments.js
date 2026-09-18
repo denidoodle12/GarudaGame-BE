@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
-
-exports.up = (pgm) => {
+export const up = (pgm) => {
   pgm.createTable('comments', {
     id: {
       type: 'VARCHAR(50)',
@@ -35,6 +34,6 @@ exports.up = (pgm) => {
   });
 };
 
-exports.down = (pgm) => {
+export const down = (pgm) => {
   pgm.dropTable('comments');
 };
