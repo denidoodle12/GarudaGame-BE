@@ -25,33 +25,33 @@ describe('GetThreadDetailUseCase', () => {
         username: 'johndoe',
         date: '2021-08-08T07:22:33.555Z',
         content: 'sebuah komentar',
-        is_delete: false,
+        'is_delete': false,
       },
       {
         id: 'comment-2',
         username: 'dicoding',
         date: '2021-08-08T07:26:21.338Z',
         content: 'sebuah komentar',
-        is_delete: true,
+        'is_delete': true,
       },
     ];
 
     const expectedReplies = [
       {
         id: 'reply-1',
-        comment_id: 'comment-1',
+        'comment_id': 'comment-1',
         content: 'sebuah balasan',
         date: '2021-08-08T07:22:33.555Z',
         username: 'johndoe',
-        is_delete: false,
+        'is_delete': false,
       },
       {
         id: 'reply-2',
-        comment_id: 'comment-2',
+        'comment_id': 'comment-2',
         content: 'sebuah balasan',
         date: '2021-08-08T07:22:33.555Z',
         username: 'dicoding',
-        is_delete: true,
+        'is_delete': true,
       },
     ];
 

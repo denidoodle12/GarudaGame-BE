@@ -1,11 +1,10 @@
-/* eslint-disable camelcase */
 export const up = (pgm) => {
   pgm.createTable('replies', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    comment_id: {
+    'comment_id': {
       type: 'VARCHAR(50)',
       notNull: true,
       references: '"comments"',
@@ -21,7 +20,7 @@ export const up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
-    is_delete: {
+    'is_delete': {
       type: 'BOOLEAN',
       notNull: true,
       default: false,

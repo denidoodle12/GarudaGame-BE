@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -41,14 +40,11 @@ const config = {
   app: {
     host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
     port: process.env.PORT,
-    debug: process.env.NODE_ENV === 'development' ? { request: ['error'] } : {},
   },
   database: databaseEnv,
   auth: {
-    jwtStrategy: 'forumapi',
     accessTokenKey: process.env.ACCESS_TOKEN_KEY,
     refreshTokenKey: process.env.REFRESH_TOKEN_KEY,
-    accessTokenAge: process.env.ACCESS_TOKEN_AGE,
   },
 };
 

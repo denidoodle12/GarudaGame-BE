@@ -19,7 +19,7 @@ const authMiddleware = (req, res, next) => {
       },
     };
     next();
-  } catch (error) {
+  } catch {
     return next(new AuthenticationError('Token tidak valid'));
   }
 };
