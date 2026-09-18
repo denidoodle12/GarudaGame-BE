@@ -37,7 +37,7 @@ describe('DeleteCommentUseCase', () => {
 
     // Assert
     expect(mockThreadRepository.verifyThreadExists).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.verifyCommentExists).toBeCalledWith(useCasePayload.commentId);
+    expect(mockCommentRepository.verifyCommentExists).toBeCalledWith(useCasePayload.commentId, useCasePayload.threadId);
     expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(useCasePayload.commentId, useCasePayload.owner);
     expect(mockCommentRepository.deleteComment).toBeCalledWith(useCasePayload.commentId);
   });

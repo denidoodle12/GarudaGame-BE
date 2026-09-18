@@ -25,10 +25,10 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     return new CreatedReply({ ...result.rows[0] });
   }
 
-  async verifyReplyExists(replyId) {
+  async verifyReplyExists(replyId, commentId) {
     const query = {
-      text: 'SELECT id FROM replies WHERE id = $1',
-      values: [replyId],
+      text: 'SELECT id FROM replies WHERE id = $1 AND comment_id = $2',
+      values: [replyId, commentId],
     };
 
     const result = await this._pool.query(query);

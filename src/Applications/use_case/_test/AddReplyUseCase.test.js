@@ -52,7 +52,7 @@ describe('AddReplyUseCase', () => {
       owner: useCasePayload.owner,
     }));
     expect(mockThreadRepository.verifyThreadExists).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.verifyCommentExists).toBeCalledWith(useCasePayload.commentId);
+    expect(mockCommentRepository.verifyCommentExists).toBeCalledWith(useCasePayload.commentId, useCasePayload.threadId);
     expect(mockReplyRepository.addReply).toBeCalledWith(new CreateReply({
       commentId: useCasePayload.commentId,
       content: useCasePayload.content,

@@ -21,8 +21,8 @@ class ThreadsHandler {
     try {
       const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
       const useCasePayload = {
-        title: req.body.title,
-        body: req.body.body,
+        title: req.body?.title,
+        body: req.body?.body,
         owner: req.auth.credentials.id,
       };
       const addedThread = await addThreadUseCase.execute(useCasePayload);
@@ -61,7 +61,7 @@ class ThreadsHandler {
     try {
       const addCommentUseCase = this._container.getInstance(AddCommentUseCase.name);
       const useCasePayload = {
-        content: req.body.content,
+        content: req.body?.content,
         threadId: req.params.threadId,
         owner: req.auth.credentials.id,
       };
@@ -100,7 +100,7 @@ class ThreadsHandler {
     try {
       const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);
       const useCasePayload = {
-        content: req.body.content,
+        content: req.body?.content,
         threadId: req.params.threadId,
         commentId: req.params.commentId,
         owner: req.auth.credentials.id,

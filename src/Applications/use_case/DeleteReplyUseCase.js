@@ -9,8 +9,8 @@ class DeleteReplyUseCase {
     const { threadId, commentId, replyId, owner } = useCasePayload;
 
     await this._threadRepository.verifyThreadExists(threadId);
-    await this._commentRepository.verifyCommentExists(commentId);
-    await this._replyRepository.verifyReplyExists(replyId);
+    await this._commentRepository.verifyCommentExists(commentId, threadId);
+    await this._replyRepository.verifyReplyExists(replyId, commentId);
     await this._replyRepository.verifyReplyOwner(replyId, owner);
     await this._replyRepository.deleteReply(replyId);
   }

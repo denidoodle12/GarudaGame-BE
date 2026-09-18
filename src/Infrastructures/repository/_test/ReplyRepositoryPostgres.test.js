@@ -74,7 +74,7 @@ describe('ReplyRepositoryPostgres', () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       // Action & Assert
-      await expect(replyRepositoryPostgres.verifyReplyExists('reply-123')).rejects.toThrowError(NotFoundError);
+      await expect(replyRepositoryPostgres.verifyReplyExists('reply-123', 'comment-123')).rejects.toThrowError(NotFoundError);
     });
 
     it('should not throw NotFoundError when reply found', async () => {
@@ -86,7 +86,19 @@ describe('ReplyRepositoryPostgres', () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       // Action & Assert
-      await expect(replyRepositoryPostgres.verifyReplyExists('reply-123')).resolves.not.toThrowError(NotFoundError);
+      await expect(replyRepositoryPostgres.verifyReplyExists('reply-123', 'comment-123')).resolves.not.toThrowError(NotFoundError);
+    });
+
+    it('should throw NotFoundError when reply belongs to another comment', async () => {
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId: 'thread-123', owner: 'user-123' });
+      await RepliesTableTestHelper.addReply({ id: 'reply-123', commentId: 'comment-123', owner: 'user-123' });
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await expect(replyRepositoryPostgres.verifyReplyExists('reply-123', 'comment-456'))
+        .rejects.toThrowError(NotFoundError);
     });
   });
 
