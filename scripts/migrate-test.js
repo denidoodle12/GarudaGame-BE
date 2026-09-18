@@ -13,4 +13,5 @@ await runner({
   databaseUrl: config.database,
   dir: 'migrations',
   direction,
+  migrationsTable: 'pgmigrations',
 });

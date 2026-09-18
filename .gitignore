@@ -6,3 +6,4 @@ coverage
 .md
 .env
 .test.env
+.postgres/
