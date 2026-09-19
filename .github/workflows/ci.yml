@@ -39,7 +39,7 @@ jobs:
       PGUSER_TEST: developer
       PGDATABASE_TEST: forumapi_test
       PGPASSWORD_TEST: test-password
-      PGPORT_TEST: 5432
+      PGPORT_TEST: 5433
       ACCESS_TOKEN_KEY: ci-access-token-key-for-forum-api
       REFRESH_TOKEN_KEY: ci-refresh-token-key-for-forum-api
 
