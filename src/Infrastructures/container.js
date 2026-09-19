@@ -25,6 +25,8 @@ import CommentRepository from '../Domains/comments/CommentRepository.js';
 import CommentRepositoryPostgres from './repository/CommentRepositoryPostgres.js';
 import ReplyRepository from '../Domains/replies/ReplyRepository.js';
 import ReplyRepositoryPostgres from './repository/ReplyRepositoryPostgres.js';
+import CommentLikeRepository from '../Domains/likes/CommentLikeRepository.js';
+import CommentLikeRepositoryPostgres from './repository/CommentLikeRepositoryPostgres.js';
 
 import AddThreadUseCase from '../Applications/use_case/AddThreadUseCase.js';
 import AddCommentUseCase from '../Applications/use_case/AddCommentUseCase.js';
@@ -32,6 +34,7 @@ import DeleteCommentUseCase from '../Applications/use_case/DeleteCommentUseCase.
 import AddReplyUseCase from '../Applications/use_case/AddReplyUseCase.js';
 import DeleteReplyUseCase from '../Applications/use_case/DeleteReplyUseCase.js';
 import GetThreadDetailUseCase from '../Applications/use_case/GetThreadDetailUseCase.js';
+import ToggleCommentLikeUseCase from '../Applications/use_case/ToggleCommentLikeUseCase.js';
 
 const container = createContainer();
 
@@ -110,6 +113,15 @@ container.register([
       dependencies: [
         { concrete: pool },
         { concrete: nanoid },
+      ],
+    },
+  },
+  {
+    key: CommentLikeRepository.name,
+    Class: CommentLikeRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        { concrete: pool },
       ],
     },
   },
@@ -253,6 +265,19 @@ container.register([
         { name: 'threadRepository', internal: ThreadRepository.name },
         { name: 'commentRepository', internal: CommentRepository.name },
         { name: 'replyRepository', internal: ReplyRepository.name },
+        { name: 'commentLikeRepository', internal: CommentLikeRepository.name },
+      ],
+    },
+  },
+  {
+    key: ToggleCommentLikeUseCase.name,
+    Class: ToggleCommentLikeUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        { name: 'threadRepository', internal: ThreadRepository.name },
+        { name: 'commentRepository', internal: CommentRepository.name },
+        { name: 'commentLikeRepository', internal: CommentLikeRepository.name },
       ],
     },
   },

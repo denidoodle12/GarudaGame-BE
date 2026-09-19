@@ -2,6 +2,7 @@ import { vi } from 'vitest';
 import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
 import CommentRepository from '../../../Domains/comments/CommentRepository.js';
 import ReplyRepository from '../../../Domains/replies/ReplyRepository.js';
+import CommentLikeRepository from '../../../Domains/likes/CommentLikeRepository.js';
 import GetThreadDetailUseCase from '../GetThreadDetailUseCase.js';
 
 describe('GetThreadDetailUseCase', () => {
@@ -55,10 +56,16 @@ describe('GetThreadDetailUseCase', () => {
       },
     ];
 
+    const expectedLikeCounts = [
+      { 'comment_id': 'comment-1', 'like_count': 2 },
+      { 'comment_id': 'comment-2', 'like_count': 1 },
+    ];
+
     /** creating dependency of use case */
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
     const mockReplyRepository = new ReplyRepository();
+    const mockCommentLikeRepository = new CommentLikeRepository();
 
     /** mocking needed function */
     mockThreadRepository.getThreadById = vi.fn()
@@ -67,12 +74,15 @@ describe('GetThreadDetailUseCase', () => {
       .mockImplementation(() => Promise.resolve(expectedComments));
     mockReplyRepository.getRepliesByCommentIds = vi.fn()
       .mockImplementation(() => Promise.resolve(expectedReplies));
+    mockCommentLikeRepository.getLikeCountsByCommentIds = vi.fn()
+      .mockImplementation(() => Promise.resolve(expectedLikeCounts));
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
       replyRepository: mockReplyRepository,
+      commentLikeRepository: mockCommentLikeRepository,
     });
 
     // Action
@@ -82,6 +92,8 @@ describe('GetThreadDetailUseCase', () => {
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.threadId);
     expect(mockReplyRepository.getRepliesByCommentIds).toBeCalledWith(['comment-1', 'comment-2']);
+    expect(mockCommentLikeRepository.getLikeCountsByCommentIds)
+      .toBeCalledWith(['comment-1', 'comment-2']);
 
     expect(threadDetail).toStrictEqual({
       id: 'thread-123',
@@ -95,6 +107,7 @@ describe('GetThreadDetailUseCase', () => {
           username: 'johndoe',
           date: '2021-08-08T07:22:33.555Z',
           content: 'sebuah komentar',
+          likeCount: 2,
           replies: [
             {
               id: 'reply-1',
@@ -109,6 +122,7 @@ describe('GetThreadDetailUseCase', () => {
           username: 'dicoding',
           date: '2021-08-08T07:26:21.338Z',
           content: '**komentar telah dihapus**',
+          likeCount: 1,
           replies: [
             {
               id: 'reply-2',
@@ -140,6 +154,7 @@ describe('GetThreadDetailUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
     const mockReplyRepository = new ReplyRepository();
+    const mockCommentLikeRepository = new CommentLikeRepository();
 
     /** mocking needed function */
     mockThreadRepository.getThreadById = vi.fn()
@@ -148,12 +163,15 @@ describe('GetThreadDetailUseCase', () => {
       .mockImplementation(() => Promise.resolve([]));
     mockReplyRepository.getRepliesByCommentIds = vi.fn()
       .mockImplementation(() => Promise.resolve([]));
+    mockCommentLikeRepository.getLikeCountsByCommentIds = vi.fn()
+      .mockImplementation(() => Promise.resolve([]));
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
       replyRepository: mockReplyRepository,
+      commentLikeRepository: mockCommentLikeRepository,
     });
 
     // Action
@@ -163,6 +181,7 @@ describe('GetThreadDetailUseCase', () => {
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.threadId);
     expect(mockReplyRepository.getRepliesByCommentIds).not.toBeCalled();
+    expect(mockCommentLikeRepository.getLikeCountsByCommentIds).not.toBeCalled();
 
     expect(threadDetail).toStrictEqual({
       id: 'thread-123',
