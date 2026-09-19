@@ -3,7 +3,7 @@ package-lock.json
 .idea
 config/database/test.json
 coverage
-.md
+*.md
 .env
 .test.env
 .postgres/

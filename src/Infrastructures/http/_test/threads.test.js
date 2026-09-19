@@ -4,6 +4,7 @@ import UsersTableTestHelper from '../../../../tests/UsersTableTestHelper.js';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.js';
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
 import RepliesTableTestHelper from '../../../../tests/RepliesTableTestHelper.js';
+import CommentLikesTableTestHelper from '../../../../tests/CommentLikesTableTestHelper.js';
 import AuthenticationsTableTestHelper from '../../../../tests/AuthenticationsTableTestHelper.js';
 import container from '../../container.js';
 import createServer from '../createServer.js';
@@ -15,6 +16,7 @@ describe('/threads endpoint', () => {
   });
 
   afterEach(async () => {
+    await CommentLikesTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
@@ -116,6 +118,7 @@ describe('/threads endpoint', () => {
       expect(response.body.data.thread).toBeDefined();
       expect(response.body.data.thread.id).toEqual('thread-123');
       expect(response.body.data.thread.comments).toHaveLength(1);
+      expect(response.body.data.thread.comments[0].likeCount).toEqual(0);
       expect(response.body.data.thread.comments[0].replies).toHaveLength(1);
     });
 
@@ -274,6 +277,78 @@ describe('/threads endpoint', () => {
       // Assert
       expect(response.status).toEqual(200);
       expect(response.body.status).toEqual('success');
+    });
+  });
+
+  describe('when PUT /threads/{threadId}/comments/{commentId}/likes', () => {
+    it('should response 401 when no access token provided', async () => {
+      const app = await createServer(container);
+
+      const response = await request(app)
+        .put('/threads/thread-123/comments/comment-123/likes');
+
+      expect(response.status).toEqual(401);
+      expect(response.body.status).toEqual('fail');
+    });
+
+    it('should response 404 when thread is not found', async () => {
+      const app = await createServer(container);
+      const accessToken = await getAccessToken(app);
+
+      const response = await request(app)
+        .put('/threads/thread-not-found/comments/comment-123/likes')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      expect(response.status).toEqual(404);
+      expect(response.body.status).toEqual('fail');
+    });
+
+    it('should response 404 when comment is not found', async () => {
+      const app = await createServer(container);
+      const accessToken = await getAccessToken(app);
+      const authenticationTokenManager = container.getInstance(AuthenticationTokenManager.name);
+      const { id: userId } = await authenticationTokenManager.decodePayload(accessToken);
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: userId });
+
+      const response = await request(app)
+        .put('/threads/thread-123/comments/comment-not-found/likes')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      expect(response.status).toEqual(404);
+      expect(response.body.status).toEqual('fail');
+    });
+
+    it('should toggle like and update comment like count', async () => {
+      const app = await createServer(container);
+      const accessToken = await getAccessToken(app);
+      const authenticationTokenManager = container.getInstance(AuthenticationTokenManager.name);
+      const { id: userId } = await authenticationTokenManager.decodePayload(accessToken);
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: userId });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-123',
+        threadId: 'thread-123',
+        owner: userId,
+      });
+
+      const likeResponse = await request(app)
+        .put('/threads/thread-123/comments/comment-123/likes')
+        .set('Authorization', `Bearer ${accessToken}`);
+      const likedThreadResponse = await request(app).get('/threads/thread-123');
+
+      expect(likeResponse.status).toEqual(200);
+      expect(likeResponse.body.status).toEqual('success');
+      expect(await CommentLikesTableTestHelper.findLike('comment-123', userId)).toHaveLength(1);
+      expect(likedThreadResponse.body.data.thread.comments[0].likeCount).toEqual(1);
+
+      const unlikeResponse = await request(app)
+        .put('/threads/thread-123/comments/comment-123/likes')
+        .set('Authorization', `Bearer ${accessToken}`);
+      const unlikedThreadResponse = await request(app).get('/threads/thread-123');
+
+      expect(unlikeResponse.status).toEqual(200);
+      expect(unlikeResponse.body.status).toEqual('success');
+      expect(await CommentLikesTableTestHelper.findLike('comment-123', userId)).toHaveLength(0);
+      expect(unlikedThreadResponse.body.data.thread.comments[0].likeCount).toEqual(0);
     });
   });
 });

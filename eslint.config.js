@@ -20,6 +20,7 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'linebreak-style': 'off',
     },
   },
 ]);

@@ -1,8 +1,14 @@
 class GetThreadDetailUseCase {
-  constructor({ threadRepository, commentRepository, replyRepository }) {
+  constructor({
+    threadRepository,
+    commentRepository,
+    replyRepository,
+    commentLikeRepository,
+  }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._commentLikeRepository = commentLikeRepository;
   }
 
   async execute(useCasePayload) {
@@ -12,9 +18,15 @@ class GetThreadDetailUseCase {
     const comments = await this._commentRepository.getCommentsByThreadId(threadId);
 
     const commentIds = comments.map((comment) => comment.id);
-    const replies = commentIds.length > 0
-      ? await this._replyRepository.getRepliesByCommentIds(commentIds)
-      : [];
+    const [replies, likeCounts] = commentIds.length > 0
+      ? await Promise.all([
+        this._replyRepository.getRepliesByCommentIds(commentIds),
+        this._commentLikeRepository.getLikeCountsByCommentIds(commentIds),
+      ])
+      : [[], []];
+    const likeCountByCommentId = new Map(
+      likeCounts.map(({ comment_id: commentId, like_count: likeCount }) => [commentId, likeCount]),
+    );
 
     thread.comments = comments.map((comment) => {
       const commentReplies = replies
@@ -30,6 +42,7 @@ class GetThreadDetailUseCase {
         id: comment.id,
         username: comment.username,
         date: comment.date,
+        likeCount: likeCountByCommentId.get(comment.id) ?? 0,
         replies: commentReplies,
         content: comment.is_delete ? '**komentar telah dihapus**' : comment.content,
       };
